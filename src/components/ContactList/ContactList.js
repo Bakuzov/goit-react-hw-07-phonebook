@@ -1,12 +1,13 @@
-import { Button, ItemLi, PFilter } from './Contact.styled';
-import { deleteUser } from 'redux/contacts/contacts-actions';
+import styles from '../ContactList/ContactList.module.css';
 import { useSelector, useDispatch } from 'react-redux';
+import { fetchDeleteContact } from 'redux/contacts/contacts-operations';
 
 export const ContactList = () => {
-  const { items, filter } = useSelector(state => state);
+  const filter = useSelector(state => state.contacts.filter);
+  const items = useSelector(state => state.contacts.items);
   const dispatch = useDispatch();
 
-  const handleDelete = id => dispatch(deleteUser(id));
+  const handleDelete = id => dispatch(fetchDeleteContact(id));
 
   const getSubmitContacts = (items, filter) => {
     return items.filter(({ name }) =>
@@ -17,17 +18,19 @@ export const ContactList = () => {
   const contactList = getSubmitContacts(items, filter);
 
   return (
-    <ul>
+    <ul className={styles.contact__list}>
       {contactList.map(({ id, name, number }) => {
         return (
-          <ItemLi key={id}>
-            <PFilter>
-              {name} : {number}{' '}
-            </PFilter>
-            <Button type="button" onClick={() => handleDelete(id)}>
+          <li className={styles.contact__item} key={id}>
+            {name} : {number}
+            <button
+              onClick={() => handleDelete(id)}
+              type="button"
+              className={styles.contact__btn}
+            >
               Delete
-            </Button>
-          </ItemLi>
+            </button>
+          </li>
         );
       })}
     </ul>
